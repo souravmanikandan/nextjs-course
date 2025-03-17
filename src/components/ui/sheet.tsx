@@ -127,7 +127,7 @@ const SheetDescription = React.forwardRef<
 SheetDescription.displayName = SheetPrimitive.Description.displayName
 
 export {
-  Sheet,
+  Sheet, 
   SheetPortal,
   SheetOverlay,
   SheetTrigger,
