@@ -17,7 +17,7 @@ export async function createPost(content:string, image:string) {
         })
 
         revalidatePath("/");
-        return {succes: true, post};
+        return {success: true, post};
     } catch (error) {
         console.log("Failed to create post: ", error)
         return {success: false, error: "Failed to create post"}

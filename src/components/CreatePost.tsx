@@ -8,6 +8,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { ImageIcon, Loader2Icon, SendIcon } from "lucide-react";
 import { createPost } from "@/actions/post.action";
+import toast from "react-hot-toast";
 
 function CreatePost() {
   const {user} = useUser();
@@ -20,9 +21,16 @@ function CreatePost() {
     if (!content.trim() && !imageUrl) return;
     setIsPosting(true)
     try {
-      await createPost(content, imageUrl)
+      const result = await createPost(content, imageUrl);
+      if (result.success) {
+        setContent("")
+        setImageUrl("")
+        setShowImageUpload(false)
+        toast.success("Post created successfully")
+      }
     } catch (error) {
-      
+      console.error("Failed to create post:", error)
+      toast.error("Failed to create post")
     }
   }
   return (
