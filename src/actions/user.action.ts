@@ -23,12 +23,12 @@ export async function syncUser() {
       data: {
         clerkId: userId,
         name: `${user.firstName || ""} ${user.lastName || ""}`,
-        username:
-          user.username ?? user.emailAddresses[0].emailAddress.split("@")[0],
+        username: user.username ?? user.emailAddresses[0].emailAddress.split("@")[0],
         email: user.emailAddresses[0].emailAddress,
         image: user.imageUrl,
       },
     });
+
     return dbUser;
   } catch (error) {
     console.log("Error in syncUser", error);
@@ -62,11 +62,12 @@ export async function getDbUserId() {
 
   return user.id;
 }
+
 export async function getRandomUsers() {
   try {
     const userId = await getDbUserId();
 
-    if (!userId) return []
+    if (!userId) return [];
 
     // get 3 random users exclude ourselves & users that we already follow
     const randomUsers = await prisma.user.findMany({
@@ -97,6 +98,7 @@ export async function getRandomUsers() {
       },
       take: 3,
     });
+
     return randomUsers;
   } catch (error) {
     console.log("Error fetching random users", error);
@@ -122,7 +124,7 @@ export async function toggleFollow(targetUserId: string) {
     });
 
     if (existingFollow) {
-      //unfollow
+      // unfollow
       await prisma.follows.delete({
         where: {
           followerId_followingId: {
@@ -140,19 +142,21 @@ export async function toggleFollow(targetUserId: string) {
             followingId: targetUserId,
           },
         }),
-      ]),
+
         prisma.notification.create({
           data: {
             type: "FOLLOW",
             userId: targetUserId, // user being followed
             creatorId: userId, // user following
           },
-        });
+        }),
+      ]);
     }
-    revalidatePath("/https://codervai.vercel.app/");
+
+    revalidatePath("/");
     return { success: true };
   } catch (error) {
-    console.log("Error in toggelFollow ", error);
-    return { success: false, error: "Error in toggling follow" };
+    console.log("Error in toggleFollow", error);
+    return { success: false, error: "Error toggling follow" };
   }
 }
